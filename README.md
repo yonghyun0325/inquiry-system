@@ -1,84 +1,110 @@
 # Inquiry System
 
-Spring Boot 기반 문의 관리 시스템 백엔드 프로젝트입니다.
+Spring Boot + JPA + MySQL 기반 문의 관리 시스템입니다.
 
-## 프로젝트 목표
-
-단순 CRUD 시스템이 아닌,
-AI 문의 응답 시스템으로 확장 가능한 구조를 목표로 개발하고 있습니다.
+REST API 기반 CRUD 기능을 구현하였으며,
+실무형 백엔드 구조를 목표로 개발 중입니다.
 
 ---
 
-## 기술 스택
+# Tech Stack
 
 - Java 17
-- Spring Boot
+- Spring Boot 4
 - Spring Data JPA
 - MySQL
 - Gradle
-- Lombok
 - Postman
 
 ---
 
-## 주요 기능
+# Project Structure
 
-### Inquiry API
+## controller
+- API 요청 처리
 
-- 문의 등록
-- 문의 조회
-- 문의 수정
-- 문의 삭제
+## service
+- 비즈니스 로직 처리
 
----
+## repository
+- DB 접근
 
-## API 구조
+## entity
+- DB 테이블 매핑
 
-| Method | URL | 설명 |
-|---|---|---|
-| POST | /inquiries | 문의 등록 |
-| GET | /inquiries | 문의 전체 조회 |
-| GET | /inquiries/{id} | 문의 단건 조회 |
-| PUT | /inquiries/{id} | 문의 수정 |
-| DELETE | /inquiries/{id} | 문의 삭제 |
+## dto
+- Request / Response 데이터 처리
 
 ---
 
-## 현재 진행 상황
+# Features
+
+- 문의 등록(Create)
+- 문의 전체 조회(Read)
+- 문의 단건 조회(Read)
+- 문의 수정(Update)
+- 문의 삭제(Delete)
+
+---
+
+# API
+
+## 문의 등록
+POST /inquiries
+
+## 문의 전체 조회
+GET /inquiries
+
+## 문의 단건 조회
+GET /inquiries/{id}
+
+## 문의 수정
+PUT /inquiries/{id}
+
+## 문의 삭제
+DELETE /inquiries/{id}
+
+---
+
+# Inquiry Entity
+
+- id
+- category
+- title
+- content
+- customerName
+- customerEmail
+- status
+- createdAt
+- updatedAt
+
+---
+
+# Current Progress
 
 - Spring Boot 프로젝트 생성
 - MySQL 연동 완료
 - JPA 설정 완료
-- Inquiry Entity 생성
-- 문의 등록 API 구현 완료
-- GitHub 연동 완료
+- CRUD API 구현 완료
+- DTO 분리(Request / Response)
+- Entity 설계 및 확장
+- Postman API 테스트 완료
 
 ---
 
-## 향후 계획
+# Next Step
 
-- CRUD 완성
 - Validation 적용
-- Exception Handling 적용
-- Auditing 적용
-- 관리자 답변 기능
-- AI 자동 응답 기능 연동
-- AWS 배포
+- Exception Handling
+- 페이징 처리
+- 검색 기능
+- JWT 로그인
+- 관리자 기능
+- AI 문의 답변 기능
 
 ---
 
-## 프로젝트 실행
+# Goal
 
-```bash
-./gradlew bootRun
-```
-
----
-
-## DB 설정
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/inquiry_db
-spring.datasource.username=root
-spring.datasource.password=비밀번호
-```
+단순 CRUD 프로젝트가 아닌,
+실무형 백엔드 아키텍처 및 REST API 설계를 목표로 개발 중입니다.
