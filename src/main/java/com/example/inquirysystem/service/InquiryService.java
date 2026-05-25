@@ -20,6 +20,7 @@ public class InquiryService {
         this.inquiryRepository = inquiryRepository;
     }
 
+    // 문의 등록
     public Map<String, String> createInquiry(InquiryRequest request) {
 
         Inquiry inquiry = new Inquiry();
@@ -44,6 +45,7 @@ public class InquiryService {
         return response;
     }
 
+    // 문의 전체 조회
     public List<InquiryResponse> getAllInquiries() {
         return inquiryRepository.findAll()
                 .stream()
@@ -51,6 +53,7 @@ public class InquiryService {
                 .toList();
     }
 
+    // 문의 단건 조회
     public InquiryResponse getInquiry(Long id) {
         Inquiry inquiry = inquiryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("문의가 없습니다."));
@@ -58,6 +61,7 @@ public class InquiryService {
         return new InquiryResponse(inquiry);
     }
 
+    // 문의 수정
     public InquiryResponse updateInquiry(
             Long id,
             InquiryRequest request
@@ -80,6 +84,7 @@ public class InquiryService {
         return new InquiryResponse(updatedInquiry);
     }
 
+    // 문의 삭제
     public Map<String, String> deleteInquiry(Long id) {
 
         Inquiry inquiry = inquiryRepository.findById(id)
