@@ -1,13 +1,21 @@
 package com.example.inquirysystem.controller;
 
 import com.example.inquirysystem.dto.InquiryRequest;
+import com.example.inquirysystem.service.InquiryService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 public class InquiryController {
+
+    private final InquiryService inquiryService;
+
+    public InquiryController(
+            InquiryService inquiryService
+    ) {
+        this.inquiryService = inquiryService;
+    }
 
     @GetMapping("/")
     public String hello() {
@@ -19,12 +27,6 @@ public class InquiryController {
             @RequestBody InquiryRequest request
     ) {
 
-        System.out.println("제목: " + request.getTitle());
-        System.out.println("내용: " + request.getContent());
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "등록 완료");
-
-        return response;
+        return inquiryService.createInquiry(request);
     }
 }
