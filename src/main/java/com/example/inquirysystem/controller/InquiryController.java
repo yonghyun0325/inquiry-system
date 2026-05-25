@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class HelloController {
+public class InquiryController {
 
     @GetMapping("/")
     public String hello() {
