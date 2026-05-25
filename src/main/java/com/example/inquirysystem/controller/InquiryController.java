@@ -17,11 +17,6 @@ public class InquiryController {
         this.inquiryService = inquiryService;
     }
 
-    @GetMapping("/")
-    public String hello() {
-        return "Hello Spring Boot!";
-    }
-
     @PostMapping("/inquiries")
     public Map<String, String> createInquiry(
             @RequestBody InquiryRequest request
