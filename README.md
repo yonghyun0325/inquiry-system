@@ -70,6 +70,24 @@ common
 
 ---
 
+# ✅ Search API
+
+제목 기반 문의 검색 기능 구현
+
+### Search Example
+
+```http
+GET /inquiries/search?title=배터리
+```
+
+### JPA Query Method
+
+```java
+findByTitleContaining(String title)
+```
+
+---
+
 # ✅ Validation
 
 사용자 요청 데이터 검증 기능 적용
@@ -171,6 +189,7 @@ updatedAt
 | GET | `/inquiries/{id}` | 문의 단건 조회 |
 | PUT | `/inquiries/{id}` | 문의 수정 |
 | DELETE | `/inquiries/{id}` | 문의 삭제 |
+| GET | `/inquiries/search?title=keyword` | 제목 검색 |
 
 ---
 
@@ -185,9 +204,10 @@ updatedAt
 - [x] API 응답 구조 통일
 - [x] JPA Auditing 적용
 - [x] Swagger 문서화 적용
-- [ ] JWT 로그인
-- [ ] 검색 기능
+- [x] 제목 검색 기능 구현
 - [ ] 페이징 처리
+- [ ] JWT 로그인
+- [ ] 복합 검색 기능
 - [ ] AI 문의 응답 기능
 
 ---
