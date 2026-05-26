@@ -4,6 +4,7 @@ import com.example.inquirysystem.dto.InquiryRequest;
 import com.example.inquirysystem.dto.InquiryResponse;
 import com.example.inquirysystem.service.InquiryService;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,9 @@ public class InquiryController {
 
     @PostMapping("/inquiries")
     public Map<String, String> createInquiry(
-            @RequestBody InquiryRequest request
+            @Valid @RequestBody InquiryRequest request
     ) {
+
         return inquiryService.createInquiry(request);
     }
 
