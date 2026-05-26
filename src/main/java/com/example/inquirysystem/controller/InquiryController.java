@@ -30,6 +30,13 @@ public class InquiryController {
         return inquiryService.getAllInquiries();
     }
 
+    @GetMapping("/inquiries/search")
+    public ApiResponse<List<InquiryResponse>> searchByTitle(
+            @RequestParam String title
+    ) {
+        return inquiryService.searchByTitle(title);
+    }
+
     @GetMapping("/inquiries/{id}")
     public ApiResponse<InquiryResponse> getInquiry(
             @PathVariable Long id
@@ -51,4 +58,6 @@ public class InquiryController {
     ) {
         return inquiryService.deleteInquiry(id);
     }
+
+
 }

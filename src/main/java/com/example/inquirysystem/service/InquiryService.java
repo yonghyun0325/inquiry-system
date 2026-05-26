@@ -114,4 +114,22 @@ public class InquiryService {
                 null
         );
     }
+
+    // 문의 제목 검색
+    public ApiResponse<List<InquiryResponse>> searchByTitle(
+            String title
+    ) {
+
+        List<InquiryResponse> inquiries =
+                inquiryRepository.findByTitleContaining(title)
+                        .stream()
+                        .map(InquiryResponse::new)
+                        .toList();
+
+        return new ApiResponse<>(
+                true,
+                "문의 검색 성공",
+                inquiries
+        );
+    }
 }
