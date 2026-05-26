@@ -1,14 +1,14 @@
 package com.example.inquirysystem.service;
 
+import com.example.inquirysystem.common.ApiResponse;
 import com.example.inquirysystem.dto.InquiryRequest;
 import com.example.inquirysystem.dto.InquiryResponse;
 import com.example.inquirysystem.entity.Inquiry;
 import com.example.inquirysystem.repository.InquiryRepository;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 @Service
@@ -16,12 +16,13 @@ public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
 
-    public InquiryService(InquiryRepository inquiryRepository) {
+    public InquiryService(InquiryRepository inquiryRepository)
+    {
         this.inquiryRepository = inquiryRepository;
     }
 
     // 문의 등록
-    public Map<String, String> createInquiry(InquiryRequest request) {
+    public ApiResponse<InquiryResponse> createInquiry(InquiryRequest request) {
 
         Inquiry inquiry = new Inquiry();
 
@@ -32,37 +33,49 @@ public class InquiryService {
         inquiry.setCustomerEmail(request.getCustomerEmail());
         inquiry.setStatus("REQUESTED");
 
-        LocalDateTime now = LocalDateTime.now().withNano(0);
+        Inquiry savedInquiry = inquiryRepository.save(inquiry);
 
-        inquiry.setCreatedAt(now);
-        inquiry.setUpdatedAt(now);
-
-        inquiryRepository.save(inquiry);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "DB 저장 완료");
-
-        return response;
+        return new ApiResponse<>(
+                true,
+                "문의 등록 성공",
+                new InquiryResponse(savedInquiry)
+        );
     }
 
     // 문의 전체 조회
-    public List<InquiryResponse> getAllInquiries() {
-        return inquiryRepository.findAll()
+    public ApiResponse<List<InquiryResponse>> getAllInquiries() {
+        List<InquiryResponse> inquiries = inquiryRepository.findAll()
                 .stream()
                 .map(InquiryResponse::new)
                 .toList();
+
+        return new ApiResponse<>(
+                true,
+                "문의 전체 조회 성공",
+                inquiries
+        );
     }
 
     // 문의 단건 조회
-    public InquiryResponse getInquiry(Long id) {
-        Inquiry inquiry = inquiryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("문의가 없습니다."));
+    public ApiResponse<InquiryResponse> getInquiry(Long id) {
 
-        return new InquiryResponse(inquiry);
+        Inquiry inquiry = inquiryRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("문의가 없습니다.")
+                );
+
+        InquiryResponse response =
+                new InquiryResponse(inquiry);
+
+        return new ApiResponse<>(
+                true,
+                "문의 조회 성공",
+                response
+        );
     }
 
     // 문의 수정
-    public InquiryResponse updateInquiry(
+    public ApiResponse<InquiryResponse> updateInquiry(
             Long id,
             InquiryRequest request
     ) {
@@ -77,24 +90,28 @@ public class InquiryService {
         inquiry.setContent(request.getContent());
         inquiry.setCustomerName(request.getCustomerName());
         inquiry.setCustomerEmail(request.getCustomerEmail());
-        inquiry.setUpdatedAt(LocalDateTime.now());
 
         Inquiry updatedInquiry = inquiryRepository.save(inquiry);
 
-        return new InquiryResponse(updatedInquiry);
+        return new ApiResponse<>(
+                true,
+                "문의 수정 성공",
+                new InquiryResponse(updatedInquiry)
+        );
     }
 
     // 문의 삭제
-    public Map<String, String> deleteInquiry(Long id) {
+    public ApiResponse<Void> deleteInquiry(Long id) {
 
         Inquiry inquiry = inquiryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("문의가 없습니다."));
 
         inquiryRepository.delete(inquiry);
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "삭제 완료");
-
-        return response;
+        return new ApiResponse<>(
+                true,
+                "문의 삭제 성공",
+                null
+        );
     }
 }

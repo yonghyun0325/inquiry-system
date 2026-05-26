@@ -3,6 +3,7 @@ package com.example.inquirysystem.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import com.example.inquirysystem.common.ApiResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationException(
+    public ApiResponse<Void> handleValidationException(
             MethodArgumentNotValidException e
     ) {
 
@@ -25,6 +26,10 @@ public class GlobalExceptionHandler {
 
         response.put("message", errorMessage);
 
-        return response;
+        return new ApiResponse<>(
+                false,
+                errorMessage,
+                null
+        );
     }
 }

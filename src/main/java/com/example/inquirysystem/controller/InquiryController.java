@@ -1,13 +1,13 @@
 package com.example.inquirysystem.controller;
 
+import com.example.inquirysystem.common.ApiResponse;
 import com.example.inquirysystem.dto.InquiryRequest;
 import com.example.inquirysystem.dto.InquiryResponse;
 import com.example.inquirysystem.service.InquiryService;
-import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class InquiryController {
@@ -19,36 +19,34 @@ public class InquiryController {
     }
 
     @PostMapping("/inquiries")
-    public Map<String, String> createInquiry(
+    public ApiResponse<InquiryResponse> createInquiry(
             @Valid @RequestBody InquiryRequest request
     ) {
-
         return inquiryService.createInquiry(request);
     }
 
     @GetMapping("/inquiries")
-    public List<InquiryResponse> getAllInquiries() {
+    public ApiResponse<List<InquiryResponse>> getAllInquiries() {
         return inquiryService.getAllInquiries();
     }
 
     @GetMapping("/inquiries/{id}")
-    public InquiryResponse getInquiry(
+    public ApiResponse<InquiryResponse> getInquiry(
             @PathVariable Long id
     ) {
         return inquiryService.getInquiry(id);
     }
 
     @PutMapping("/inquiries/{id}")
-    public InquiryResponse updateInquiry(
+    public ApiResponse<InquiryResponse> updateInquiry(
             @PathVariable Long id,
-            @RequestBody InquiryRequest request
+            @Valid @RequestBody InquiryRequest request
     ) {
-
         return inquiryService.updateInquiry(id, request);
     }
 
     @DeleteMapping("/inquiries/{id}")
-    public Map<String, String> deleteInquiry(
+    public ApiResponse<Void> deleteInquiry(
             @PathVariable Long id
     ) {
         return inquiryService.deleteInquiry(id);
