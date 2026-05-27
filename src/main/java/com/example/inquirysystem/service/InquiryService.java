@@ -150,4 +150,52 @@ public class InquiryService {
                 inquiries
         );
     }
+
+    // 문의 복합 검색
+    public ApiResponse<List<InquiryResponse>> searchInquiries(
+            String title,
+            String category,
+            String status
+    ) {
+
+        List<InquiryResponse> inquiries =
+                inquiryRepository.searchInquiries(
+                                title,
+                                category,
+                                status
+                        )
+                        .stream()
+                        .map(InquiryResponse::new)
+                        .toList();
+
+        return new ApiResponse<>(
+                true,
+                "문의 검색 성공",
+                inquiries
+        );
+    }
+
+    // 문의 복합 검색 + 페이징
+    public ApiResponse<Page<InquiryResponse>> searchInquiriesWithPaging(
+            String title,
+            String category,
+            String status,
+            Pageable pageable
+    ) {
+
+        Page<InquiryResponse> inquiries =
+                inquiryRepository.searchInquiriesWithPaging(
+                                title,
+                                category,
+                                status,
+                                pageable
+                        )
+                        .map(InquiryResponse::new);
+
+        return new ApiResponse<>(
+                true,
+                "문의 검색 페이징 조회 성공",
+                inquiries
+        );
+    }
 }
