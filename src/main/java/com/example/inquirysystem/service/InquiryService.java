@@ -6,6 +6,8 @@ import com.example.inquirysystem.dto.InquiryResponse;
 import com.example.inquirysystem.entity.Inquiry;
 import com.example.inquirysystem.repository.InquiryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 import java.time.LocalDateTime;
@@ -39,6 +41,22 @@ public class InquiryService {
                 true,
                 "문의 등록 성공",
                 new InquiryResponse(savedInquiry)
+        );
+    }
+
+    // 문의 페이징 조회
+    public ApiResponse<Page<InquiryResponse>> getInquiriesWithPaging(
+            Pageable pageable
+    ) {
+
+        Page<InquiryResponse> inquiries =
+                inquiryRepository.findAll(pageable)
+                        .map(InquiryResponse::new);
+
+        return new ApiResponse<>(
+                true,
+                "문의 페이징 조회 성공",
+                inquiries
         );
     }
 

@@ -6,6 +6,8 @@ import com.example.inquirysystem.dto.InquiryResponse;
 import com.example.inquirysystem.service.InquiryService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -35,6 +37,13 @@ public class InquiryController {
             @RequestParam String title
     ) {
         return inquiryService.searchByTitle(title);
+    }
+
+    @GetMapping("/inquiries/page")
+    public ApiResponse<Page<InquiryResponse>> getInquiriesWithPaging(
+            Pageable pageable
+    ) {
+        return inquiryService.getInquiriesWithPaging(pageable);
     }
 
     @GetMapping("/inquiries/{id}")
