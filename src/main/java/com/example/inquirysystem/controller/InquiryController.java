@@ -92,6 +92,4 @@ public class InquiryController {
     ) {
         return inquiryService.deleteInquiry(id);
     }
-
-
 }

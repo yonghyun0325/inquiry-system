@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<UserResponse> login(
+    public ApiResponse<LoginResponse> login(
             @Valid @RequestBody UserLoginRequest request
     ) {
         return userService.login(request);
