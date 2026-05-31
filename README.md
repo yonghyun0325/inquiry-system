@@ -3,7 +3,7 @@
 > Spring Boot + JPA 기반 문의 관리 및 사용자 인증 시스템 백엔드 프로젝트
 
 단순 CRUD 구현이 아닌,  
-실무형 REST API 구조와 유지보수 가능한 백엔드 아키텍처 학습을 목표로 개발 중입니다.
+실무형 REST API 구조와 사용자 인증 흐름을 포함한 백엔드 아키텍처 학습을 목표로 개발 중입니다.
 
 ---
 
@@ -13,8 +13,10 @@
 - Java 17
 - Spring Boot
 - Spring Data JPA
+- Spring Security
 - Hibernate
 - Validation
+- JWT
 - Swagger(OpenAPI)
 
 ## Database
@@ -36,6 +38,9 @@
 # 📂 Project Structure
 
 ```plaintext
+common
+ ┣ 공통 API 응답 구조
+
 controller
  ┣ Inquiry API 요청 처리
 
@@ -54,13 +59,15 @@ dto
 exception
  ┣ Global Exception Handling
 
-common
- ┣ 공통 API 응답 구조
+security
+ ┣ Spring Security 설정
+ ┣ JWT 생성 로직
 
 user
  ┣ 사용자 Entity / Repository / Service / Controller
  ┣ 회원가입 요청 DTO
  ┣ 로그인 요청 DTO
+ ┣ 로그인 응답 DTO
  ┣ 사용자 응답 DTO
 ```
 
@@ -80,30 +87,6 @@ user
 
 ---
 
-## ✅ User Management API
-
-사용자 회원가입 및 로그인 기능을 구현했습니다.
-
-- 회원가입
-- 로그인
-- 이메일 중복 체크
-- 사용자 기본 권한 설정
-- 사용자 상태 관리
-
-### Default User Role
-
-```plaintext
-ROLE_USER
-```
-
-### Default User Status
-
-```plaintext
-ACTIVE
-```
-
----
-
 ## ✅ Search API
 
 제목 기반 및 조건 기반 문의 검색 기능을 구현했습니다.
@@ -118,12 +101,6 @@ GET /inquiries/search?title=배터리
 
 ```http
 GET /inquiries/search?title=배터리&category=BATTERY&status=REQUESTED
-```
-
-### JPA Query Method
-
-```java
-findByTitleContaining(String title)
 ```
 
 ---
@@ -144,14 +121,54 @@ GET /inquiries/page?page=0&size=5
 GET /inquiries/search/page?category=BATTERY&page=0&size=3
 ```
 
-### Pageable Default
+---
 
-```java
-@PageableDefault(
-    size = 5,
-    sort = "id",
-    direction = Sort.Direction.DESC
-)
+## ✅ User Management API
+
+사용자 회원가입 및 로그인 기능을 구현했습니다.
+
+### Signup
+
+- 이메일 중복 체크
+- 비밀번호 BCrypt 암호화
+- 기본 권한 설정
+- 기본 상태 설정
+
+```plaintext
+ROLE_USER
+ACTIVE
+```
+
+### Login
+
+- 이메일 기반 사용자 조회
+- 비밀번호 검증
+- JWT Access Token 발급
+
+---
+
+## ✅ JWT Authentication
+
+로그인 성공 시 JWT Access Token을 발급하도록 구현했습니다.
+
+### Login Response Example
+
+```json
+{
+  "success": true,
+  "message": "로그인 성공",
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9..."
+  }
+}
+```
+
+### JWT Info
+
+```plaintext
+Subject    : 사용자 이메일
+Algorithm  : HS256
+Expiration : 1시간
 ```
 
 ---
@@ -229,13 +246,6 @@ Swagger(OpenAPI)를 적용하여 API 문서 자동화 및 브라우저 기반 �
 http://localhost:8080/swagger-ui/index.html
 ```
 
-### Swagger Features
-
-- API 그룹화
-- API 설명 작성
-- 브라우저 기반 API 테스트
-- Request / Response 자동 문서화
-
 ---
 
 # 📌 Entity Design
@@ -290,7 +300,7 @@ updatedAt
 | Method | URL | Description |
 |---|---|---|
 | POST | `/users/signup` | 회원가입 |
-| POST | `/users/login` | 로그인 |
+| POST | `/users/login` | 로그인 및 JWT 발급 |
 
 ---
 
@@ -312,7 +322,9 @@ updatedAt
 - [x] Swagger API 설명 적용
 - [x] 회원가입 기능 구현
 - [x] 로그인 기능 구현
-- [ ] JWT 토큰 발급
+- [x] BCrypt 비밀번호 암호화 적용
+- [x] JWT Access Token 발급
+- [ ] JWT 인증 필터 구현
 - [ ] 인증 / 권한 처리
 - [ ] AI 문의 응답 기능
 
@@ -320,8 +332,8 @@ updatedAt
 
 # 🔜 Next Step
 
-- JWT 토큰 발급
-- 로그인 성공 시 Access Token 반환
+- JWT 인증 필터 구현
+- Authorization Header 기반 토큰 검증
 - 인증 필요한 API 보호
 - 사용자 권한 기반 접근 제어
 - AI 문의 응답 기능 연동
@@ -333,5 +345,5 @@ updatedAt
 단순 CRUD 프로젝트를 넘어,  
 문의 관리 기능과 사용자 인증 흐름을 포함한 실무형 REST API 백엔드 구조를 학습하고 있습니다.
 
-향후 JWT 인증과 AI 문의 응답 기능을 추가하여  
-AI 기반 문의 관리 시스템으로 확장하는 것을 목표로 합니다.
+향후 JWT 인증 필터와 권한 처리를 추가하고,  
+AI 문의 응답 기능을 연동하여 AI 기반 문의 관리 시스템으로 확장하는 것을 목표로 합니다.
