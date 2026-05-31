@@ -72,7 +72,7 @@ common
 
 # ✅ Search API
 
-제목 기반 문의 검색 기능 구현
+제목 기반 및 조건 기반 문의 검색 기능 구현
 
 ### Search Example
 
@@ -80,10 +80,44 @@ common
 GET /inquiries/search?title=배터리
 ```
 
+### Dynamic Search Example
+
+```http
+GET /inquiries/search?title=배터리&category=BATTERY&status=REQUESTED
+```
+
 ### JPA Query Method
 
 ```java
 findByTitleContaining(String title)
+```
+
+---
+
+# ✅ Pagination API
+
+페이지 기반 조회 기능 구현
+
+### Pagination Example
+
+```http
+GET /inquiries/page?page=0&size=5
+```
+
+### Search + Pagination Example
+
+```http
+GET /inquiries/search/page?category=BATTERY&page=0&size=3
+```
+
+### Pageable Default
+
+```java
+@PageableDefault(
+    size = 5,
+    sort = "id",
+    direction = Sort.Direction.DESC
+)
 ```
 
 ---
@@ -162,6 +196,13 @@ API 문서 자동화 및 브라우저 기반 테스트 환경 구성
 http://localhost:8080/swagger-ui/index.html
 ```
 
+### Swagger Features
+
+- API 그룹화
+- API 설명(summary / description)
+- 브라우저 기반 API 테스트
+- Request / Response 자동 문서화
+
 ---
 
 # 📌 Inquiry Entity
@@ -189,7 +230,9 @@ updatedAt
 | GET | `/inquiries/{id}` | 문의 단건 조회 |
 | PUT | `/inquiries/{id}` | 문의 수정 |
 | DELETE | `/inquiries/{id}` | 문의 삭제 |
-| GET | `/inquiries/search?title=keyword` | 제목 검색 |
+| GET | `/inquiries/search` | 문의 검색 |
+| GET | `/inquiries/page` | 문의 페이징 조회 |
+| GET | `/inquiries/search/page` | 검색 + 페이징 조회 |
 
 ---
 
@@ -205,9 +248,13 @@ updatedAt
 - [x] JPA Auditing 적용
 - [x] Swagger 문서화 적용
 - [x] 제목 검색 기능 구현
-- [ ] 페이징 처리
+- [x] 복합 검색 기능 구현
+- [x] Pageable 기반 페이징 구현
+- [x] 검색 + 페이징 기능 구현
+- [x] Swagger API 설명 적용
 - [ ] JWT 로그인
-- [ ] 복합 검색 기능
+- [ ] 회원가입 기능
+- [ ] 인증 / 권한 처리
 - [ ] AI 문의 응답 기능
 
 ---
