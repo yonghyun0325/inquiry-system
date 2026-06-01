@@ -1,5 +1,7 @@
 package com.example.inquirysystem.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,22 +20,51 @@ public class JwtProvider {
     @Value("${jwt.expiration}")
     private long expiration;
 
-    public String createToken(String email) {
-
-        SecretKey key = Keys.hmacShaKeyFor(
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(
                 secretKey.getBytes(StandardCharsets.UTF_8)
         );
+    }
+
+    // JWT 토큰 생성
+    public String createToken(String email) {
 
         Date now = new Date();
-
-        Date expiryDate =
-                new Date(now.getTime() + expiration);
+        Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(key)
+                .signWith(getSigningKey())
                 .compact();
+    }
+
+    // JWT 토큰 검증
+    public boolean validateToken(String token) {
+
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    // JWT 토큰에서 이메일 추출
+    public String getEmail(String token) {
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
     }
 }
