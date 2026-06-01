@@ -65,12 +65,27 @@ public class UserService {
             );
         }
 
-        String accessToken = jwtProvider.createToken(user.getEmail());
+        String accessToken = jwtProvider.createToken(user.getEmail()
+                ,user.getRole());
 
         return new ApiResponse<>(
                 true,
                 "로그인 성공",
                 new LoginResponse(accessToken)
+        );
+    }
+
+    public ApiResponse<UserMeResponse> getMyInfo(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("사용자를 찾을 수 없습니다.")
+                );
+
+        return new ApiResponse<>(
+                true,
+                "내 정보 조회 성공",
+                new UserMeResponse(user)
         );
     }
 }
