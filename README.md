@@ -3,7 +3,7 @@
 > Spring Boot + JPA 기반 문의 관리 및 사용자 인증 시스템 백엔드 프로젝트
 
 단순 CRUD 구현이 아닌,
-실무형 REST API 구조와 사용자 인증 흐름을 포함한 백엔드 아키텍처 학습을 목표로 개발 중입니다.
+실무형 REST API 구조와 사용자 인증(Authentication) 및 권한 인가(Authorization) 흐름을 포함한 백엔드 아키텍처 학습을 목표로 개발 중입니다.
 
 ---
 
@@ -48,6 +48,7 @@ common
 
 controller
  ┣ Inquiry API 요청 처리
+ ┣ Admin API 요청 처리
 
 service
  ┣ 비즈니스 로직 처리
@@ -75,6 +76,7 @@ user
  ┣ 로그인 요청 DTO
  ┣ 로그인 응답 DTO
  ┣ 사용자 응답 DTO
+ ┣ 내 정보 조회 DTO
 ```
 
 ---
@@ -206,6 +208,76 @@ JWT 토큰 포함 시
 
 ---
 
+## ✅ Role-Based Authorization
+
+JWT 기반 권한(Role) 제어 기능을 구현했습니다.
+
+### Supported Roles
+
+```plaintext
+ROLE_USER
+ROLE_ADMIN
+```
+
+### Authorization Flow
+
+```plaintext
+로그인
+↓
+JWT 발급
+↓
+Role 저장
+↓
+JWT 검증
+↓
+SecurityContext 등록
+↓
+권한 검사
+```
+
+### Admin API Example
+
+```http
+GET /admin/test
+```
+
+### Authorization Result
+
+```plaintext
+ROLE_USER  → 403 Forbidden
+ROLE_ADMIN → 200 OK
+```
+
+---
+
+## ✅ User Profile API
+
+현재 로그인한 사용자 정보를 조회할 수 있습니다.
+
+### Example
+
+```http
+GET /users/me
+Authorization: Bearer {JWT_TOKEN}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "내 정보 조회 성공",
+  "data": {
+    "id": 2,
+    "email": "security@test.com",
+    "name": "보안테스트",
+    "role": "ROLE_ADMIN"
+  }
+}
+```
+
+---
+
 ## ✅ Validation
 
 사용자 요청 데이터 검증 기능을 적용했습니다.
@@ -216,8 +288,6 @@ JWT 토큰 포함 시
 @Valid
 ```
 
-잘못된 요청을 차단하고 커스텀 메시지를 반환하도록 구현했습니다.
-
 ---
 
 ## ✅ Global Exception Handling
@@ -227,16 +297,6 @@ JWT 토큰 포함 시
 ```
 
 기반 전역 예외 처리를 적용했습니다.
-
-### Error Response Example
-
-```json
-{
-  "success": false,
-  "message": "이메일 형식이 아닙니다.",
-  "data": null
-}
-```
 
 ---
 
@@ -330,14 +390,21 @@ updatedAt
 
 ## User API
 
-| Method | URL             | Description  |
-| ------ | --------------- | ------------ |
-| POST   | `/users/signup` | 회원가입         |
-| POST   | `/users/login`  | 로그인 및 JWT 발급 |
+| Method | URL             | Description   |
+| ------ | --------------- | ------------- |
+| POST   | `/users/signup` | 회원가입          |
+| POST   | `/users/login`  | 로그인 및 JWT 발급  |
+| GET    | `/users/me`     | 현재 로그인 사용자 조회 |
 
----
+## Admin API
 
+| Method | URL           | Description |
+| ------ | ------------- | ----------- |
+| GET    | `/admin/test` | 관리자 권한 테스트  |
+|        |               |             |
 # 📈 Current Progress
+
+## Core
 
 * [x] Spring Boot 프로젝트 생성
 * [x] MySQL 연동
@@ -348,41 +415,152 @@ updatedAt
 * [x] API 응답 구조 통일
 * [x] JPA Auditing 적용
 * [x] Swagger 문서화 적용
+
+---
+
+## Inquiry
+
+* [x] 문의 등록
+
+* [x] 문의 전체 조회
+
+* [x] 문의 단건 조회
+
+* [x] 문의 수정
+
+* [x] 문의 삭제
+
 * [x] 제목 검색 기능 구현
+
 * [x] 복합 검색 기능 구현
+
 * [x] Pageable 기반 페이징 구현
+
 * [x] 검색 + 페이징 기능 구현
-* [x] Swagger API 설명 적용
+
+---
+
+## User
+
 * [x] 회원가입 기능 구현
 * [x] 로그인 기능 구현
 * [x] BCrypt 비밀번호 암호화 적용
+
+---
+
+## Security
+
+### Authentication
+
+* [x] Spring Security 적용
 * [x] JWT Access Token 발급
 * [x] JWT 토큰 검증
-* [x] JWT 인증 필터 구현
+* [x] JwtAuthenticationFilter 구현
 * [x] Authorization Header 인증 처리
 * [x] SecurityContext 인증 등록
-* [ ] 현재 로그인 사용자 조회 API (/users/me)
-* [ ] 권한(Role) 기반 접근 제어
-* [ ] 관리자(Admin) 기능
+
+### User Information
+
+* [x] 현재 로그인 사용자 조회 API (/users/me)
+
+### Authorization
+
+* [x] JWT Role Claim 적용
+* [x] ROLE_USER 구현
+* [x] ROLE_ADMIN 구현
+* [x] Spring Security 권한 등록
+* [x] Role 기반 접근 제어
+* [x] Admin API 보호
+* [x] 관리자 권한 검증 완료
+
+---
+
+## Documentation
+
+* [x] Swagger API 설명 적용
+* [x] README 문서화
+
+---
+
+## In Progress
+
 * [ ] Refresh Token 적용
+* [ ] 관리자 회원 관리 기능
+* [ ] 관리자 문의 관리 기능
 * [ ] AI 문의 응답 기능
+* [ ] AI 문의 자동 분류 기능
 
 ---
 
 # 🔜 Next Step
 
-* 현재 로그인 사용자 조회 API (/users/me)
-* Role 기반 권한 처리
-* 관리자(Admin) 기능 구현
-* Refresh Token 적용
-* AI 문의 응답 기능 연동
+## Admin Features
+
+* 관리자 회원 목록 조회 API
+* 사용자 권한(Role) 변경 API
+* 사용자 상태(Status) 변경 API
+* 관리자 문의 목록 조회 API
+* 관리자 문의 상태 변경 API
+
+## Security
+
+* Refresh Token 구현
+* Access Token 재발급 API 구현
+* 로그아웃 처리
+
+## AI
+
+* OpenAI API 연동
+* AI 문의 자동 답변
+* AI 문의 카테고리 분류
+* AI 답변 저장 기능
 
 ---
 
 # 🎯 Goal
 
 단순 CRUD 프로젝트를 넘어,
-문의 관리 기능과 사용자 인증 흐름을 포함한 실무형 REST API 백엔드 구조를 학습하고 있습니다.
 
-향후 JWT 인증과 권한 처리를 추가하고,
-AI 문의 응답 기능을 연동하여 AI 기반 문의 관리 시스템으로 확장하는 것을 목표로 합니다.
+* JWT 기반 인증(Authentication)
+* Role 기반 권한 인가(Authorization)
+* 관리자(Admin) 기능
+* AI 문의 자동 응답
+
+을 포함한 실무형 백엔드 시스템 구축을 목표로 합니다.
+
+현재는 Spring Security와 JWT 기반 인증/인가 구조를 구현하였으며,
+
+향후 Refresh Token,
+관리자 기능,
+AI 문의 자동 분류 및 답변 기능을 추가하여
+
+**AI 기반 문의 관리 플랫폼(AI Inquiry Management Platform)** 으로 확장하는 것을 목표로 합니다.
+
+---
+
+# 🚀 Project Status
+
+```plaintext
+CRUD                  ✅ 완료
+검색                  ✅ 완료
+페이징                ✅ 완료
+
+회원가입              ✅ 완료
+로그인                ✅ 완료
+BCrypt                ✅ 완료
+
+JWT 발급              ✅ 완료
+JWT 검증              ✅ 완료
+JWT Filter            ✅ 완료
+
+/users/me            ✅ 완료
+
+ROLE_USER            ✅ 완료
+ROLE_ADMIN           ✅ 완료
+
+관리자 접근 제어       ✅ 완료
+
+Refresh Token        ⏳ 예정
+관리자 기능           ⏳ 진행 예정
+AI 문의 응답          ⏳ 진행 예정
+```
