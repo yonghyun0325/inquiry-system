@@ -2,7 +2,7 @@
 
 > Spring Boot + JPA 기반 문의 관리 및 사용자 인증 시스템 백엔드 프로젝트
 
-단순 CRUD 구현이 아닌,  
+단순 CRUD 구현이 아닌,
 실무형 REST API 구조와 사용자 인증 흐름을 포함한 백엔드 아키텍처 학습을 목표로 개발 중입니다.
 
 ---
@@ -10,28 +10,33 @@
 # 🛠 Tech Stack
 
 ## Backend
-- Java 17
-- Spring Boot
-- Spring Data JPA
-- Spring Security
-- Hibernate
-- Validation
-- JWT
-- Swagger(OpenAPI)
+
+* Java 17
+* Spring Boot
+* Spring Data JPA
+* Spring Security
+* Hibernate
+* Validation
+* JWT
+* Swagger(OpenAPI)
 
 ## Database
-- MySQL
+
+* MySQL
 
 ## Build Tool
-- Gradle
+
+* Gradle
 
 ## API Test
-- Postman
-- Swagger UI
+
+* Postman
+* Swagger UI
 
 ## Version Control
-- Git
-- GitHub
+
+* Git
+* GitHub
 
 ---
 
@@ -60,8 +65,9 @@ exception
  ┣ Global Exception Handling
 
 security
- ┣ Spring Security 설정
- ┣ JWT 생성 로직
+ ┣ SecurityConfig
+ ┣ JwtProvider
+ ┣ JwtAuthenticationFilter
 
 user
  ┣ 사용자 Entity / Repository / Service / Controller
@@ -79,11 +85,11 @@ user
 
 문의 관리 기능을 REST API 기반으로 구현했습니다.
 
-- 문의 등록
-- 문의 전체 조회
-- 문의 단건 조회
-- 문의 수정
-- 문의 삭제
+* 문의 등록
+* 문의 전체 조회
+* 문의 단건 조회
+* 문의 수정
+* 문의 삭제
 
 ---
 
@@ -129,10 +135,10 @@ GET /inquiries/search/page?category=BATTERY&page=0&size=3
 
 ### Signup
 
-- 이메일 중복 체크
-- 비밀번호 BCrypt 암호화
-- 기본 권한 설정
-- 기본 상태 설정
+* 이메일 중복 체크
+* BCrypt 비밀번호 암호화
+* 기본 권한 설정
+* 기본 상태 설정
 
 ```plaintext
 ROLE_USER
@@ -141,15 +147,15 @@ ACTIVE
 
 ### Login
 
-- 이메일 기반 사용자 조회
-- 비밀번호 검증
-- JWT Access Token 발급
+* 이메일 기반 사용자 조회
+* 비밀번호 검증
+* JWT Access Token 발급
 
 ---
 
 ## ✅ JWT Authentication
 
-로그인 성공 시 JWT Access Token을 발급하도록 구현했습니다.
+로그인 성공 시 JWT Access Token을 발급하고, 보호된 API 접근 시 JWT 기반 인증을 수행하도록 구현했습니다.
 
 ### Login Response Example
 
@@ -158,7 +164,7 @@ ACTIVE
   "success": true,
   "message": "로그인 성공",
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiJ9..."
+    "accessToken": "eyJhbGciOiJIUzUxMiJ9..."
   }
 }
 ```
@@ -167,8 +173,35 @@ ACTIVE
 
 ```plaintext
 Subject    : 사용자 이메일
-Algorithm  : HS256
+Algorithm  : HS512
 Expiration : 1시간
+```
+
+### JWT Authentication Features
+
+* JWT Access Token 발급
+* JWT 토큰 검증
+* JwtAuthenticationFilter 구현
+* Authorization Header 인증 처리
+* SecurityContext 인증 등록
+
+### Authentication Example
+
+```http
+GET /inquiries
+Authorization: Bearer {JWT_TOKEN}
+```
+
+JWT 토큰 없이 접근 시
+
+```plaintext
+403 Forbidden
+```
+
+JWT 토큰 포함 시
+
+```plaintext
+200 OK
 ```
 
 ---
@@ -284,66 +317,72 @@ updatedAt
 
 ## Inquiry API
 
-| Method | URL | Description |
-|---|---|---|
-| POST | `/inquiries` | 문의 등록 |
-| GET | `/inquiries` | 문의 전체 조회 |
-| GET | `/inquiries/{id}` | 문의 단건 조회 |
-| PUT | `/inquiries/{id}` | 문의 수정 |
-| DELETE | `/inquiries/{id}` | 문의 삭제 |
-| GET | `/inquiries/search` | 문의 검색 |
-| GET | `/inquiries/page` | 문의 페이징 조회 |
-| GET | `/inquiries/search/page` | 검색 + 페이징 조회 |
+| Method | URL                      | Description |
+| ------ | ------------------------ | ----------- |
+| POST   | `/inquiries`             | 문의 등록       |
+| GET    | `/inquiries`             | 문의 전체 조회    |
+| GET    | `/inquiries/{id}`        | 문의 단건 조회    |
+| PUT    | `/inquiries/{id}`        | 문의 수정       |
+| DELETE | `/inquiries/{id}`        | 문의 삭제       |
+| GET    | `/inquiries/search`      | 문의 검색       |
+| GET    | `/inquiries/page`        | 문의 페이징 조회   |
+| GET    | `/inquiries/search/page` | 검색 + 페이징 조회 |
 
 ## User API
 
-| Method | URL | Description |
-|---|---|---|
-| POST | `/users/signup` | 회원가입 |
-| POST | `/users/login` | 로그인 및 JWT 발급 |
+| Method | URL             | Description  |
+| ------ | --------------- | ------------ |
+| POST   | `/users/signup` | 회원가입         |
+| POST   | `/users/login`  | 로그인 및 JWT 발급 |
 
 ---
 
 # 📈 Current Progress
 
-- [x] Spring Boot 프로젝트 생성
-- [x] MySQL 연동
-- [x] JPA CRUD 구현
-- [x] DTO 분리
-- [x] Validation 적용
-- [x] Global Exception Handling 적용
-- [x] API 응답 구조 통일
-- [x] JPA Auditing 적용
-- [x] Swagger 문서화 적용
-- [x] 제목 검색 기능 구현
-- [x] 복합 검색 기능 구현
-- [x] Pageable 기반 페이징 구현
-- [x] 검색 + 페이징 기능 구현
-- [x] Swagger API 설명 적용
-- [x] 회원가입 기능 구현
-- [x] 로그인 기능 구현
-- [x] BCrypt 비밀번호 암호화 적용
-- [x] JWT Access Token 발급
-- [ ] JWT 인증 필터 구현
-- [ ] 인증 / 권한 처리
-- [ ] AI 문의 응답 기능
+* [x] Spring Boot 프로젝트 생성
+* [x] MySQL 연동
+* [x] JPA CRUD 구현
+* [x] DTO 분리
+* [x] Validation 적용
+* [x] Global Exception Handling 적용
+* [x] API 응답 구조 통일
+* [x] JPA Auditing 적용
+* [x] Swagger 문서화 적용
+* [x] 제목 검색 기능 구현
+* [x] 복합 검색 기능 구현
+* [x] Pageable 기반 페이징 구현
+* [x] 검색 + 페이징 기능 구현
+* [x] Swagger API 설명 적용
+* [x] 회원가입 기능 구현
+* [x] 로그인 기능 구현
+* [x] BCrypt 비밀번호 암호화 적용
+* [x] JWT Access Token 발급
+* [x] JWT 토큰 검증
+* [x] JWT 인증 필터 구현
+* [x] Authorization Header 인증 처리
+* [x] SecurityContext 인증 등록
+* [ ] 현재 로그인 사용자 조회 API (/users/me)
+* [ ] 권한(Role) 기반 접근 제어
+* [ ] 관리자(Admin) 기능
+* [ ] Refresh Token 적용
+* [ ] AI 문의 응답 기능
 
 ---
 
 # 🔜 Next Step
 
-- JWT 인증 필터 구현
-- Authorization Header 기반 토큰 검증
-- 인증 필요한 API 보호
-- 사용자 권한 기반 접근 제어
-- AI 문의 응답 기능 연동
+* 현재 로그인 사용자 조회 API (/users/me)
+* Role 기반 권한 처리
+* 관리자(Admin) 기능 구현
+* Refresh Token 적용
+* AI 문의 응답 기능 연동
 
 ---
 
 # 🎯 Goal
 
-단순 CRUD 프로젝트를 넘어,  
+단순 CRUD 프로젝트를 넘어,
 문의 관리 기능과 사용자 인증 흐름을 포함한 실무형 REST API 백엔드 구조를 학습하고 있습니다.
 
-향후 JWT 인증 필터와 권한 처리를 추가하고,  
+향후 JWT 인증과 권한 처리를 추가하고,
 AI 문의 응답 기능을 연동하여 AI 기반 문의 관리 시스템으로 확장하는 것을 목표로 합니다.
