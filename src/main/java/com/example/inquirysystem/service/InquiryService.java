@@ -8,7 +8,9 @@ import com.example.inquirysystem.repository.InquiryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
+import com.example.inquirysystem.dto.AdminInquiryResponse;
+import com.example.inquirysystem.dto.InquiryStatusUpdateRequest;
+import com.example.inquirysystem.dto.InquiryAnswerUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -196,6 +198,67 @@ public class InquiryService {
                 true,
                 "문의 검색 페이징 조회 성공",
                 inquiries
+        );
+    }
+
+    // 관리자 문의 목록 조회
+    public ApiResponse<List<AdminInquiryResponse>> getAllInquiriesForAdmin() {
+
+        List<AdminInquiryResponse> inquiries = inquiryRepository.findAll()
+                .stream()
+                .map(AdminInquiryResponse::new)
+                .toList();
+
+        return new ApiResponse<>(
+                true,
+                "관리자 문의 목록 조회 성공",
+                inquiries
+        );
+    }
+
+    // 관리자 문의 상태 변경
+    public ApiResponse<String> updateInquiryStatus(
+            Long id,
+            InquiryStatusUpdateRequest request
+    ) {
+
+        Inquiry inquiry = inquiryRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("문의를 찾을 수 없습니다.")
+                );
+
+        inquiry.setStatus(request.getStatus());
+
+        inquiryRepository.save(inquiry);
+
+        return new ApiResponse<>(
+                true,
+                "문의 상태 변경 성공",
+                inquiry.getStatus()
+        );
+    }
+    // 관리자 문의 답변 등록
+    public ApiResponse<String> updateInquiryAnswer(
+            Long id,
+            InquiryAnswerUpdateRequest request
+    ) {
+
+        Inquiry inquiry = inquiryRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("문의를 찾을 수 없습니다.")
+                );
+
+        inquiry.setAnswer(request.getAnswer());
+
+        // 답변 등록 시 상태 자동 변경
+        inquiry.setStatus("COMPLETED");
+
+        inquiryRepository.save(inquiry);
+
+        return new ApiResponse<>(
+                true,
+                "문의 답변 등록 성공",
+                inquiry.getAnswer()
         );
     }
 }

@@ -32,6 +32,8 @@ public class Inquiry {
 
     private String status;
 
+    private String answer;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;

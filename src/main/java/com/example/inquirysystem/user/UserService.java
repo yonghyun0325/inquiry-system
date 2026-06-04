@@ -4,6 +4,7 @@ import com.example.inquirysystem.common.ApiResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.inquirysystem.security.JwtProvider;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -86,6 +87,64 @@ public class UserService {
                 true,
                 "내 정보 조회 성공",
                 new UserMeResponse(user)
+        );
+    }
+
+    // 관리자 회원 목록 조회
+    public ApiResponse<List<AdminUserResponse>> getAllUsersForAdmin() {
+
+        List<AdminUserResponse> users = userRepository.findAll()
+                .stream()
+                .map(AdminUserResponse::new)
+                .toList();
+
+        return new ApiResponse<>(
+                true,
+                "회원 목록 조회 성공",
+                users
+        );
+    }
+
+    public ApiResponse<String> updateUserRole(
+            Long userId,
+            RoleUpdateRequest request
+    ) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("사용자를 찾을 수 없습니다.")
+                );
+
+        user.setRole(request.getRole());
+
+        userRepository.save(user);
+
+        return new ApiResponse<>(
+                true,
+                "권한 변경 성공",
+                user.getRole()
+        );
+    }
+
+    // 사용자 상태 변경
+    public ApiResponse<String> updateUserStatus(
+            Long userId,
+            StatusUpdateRequest request
+    ) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("사용자를 찾을 수 없습니다.")
+                );
+
+        user.setStatus(request.getStatus());
+
+        userRepository.save(user);
+
+        return new ApiResponse<>(
+                true,
+                "상태 변경 성공",
+                user.getStatus()
         );
     }
 }
