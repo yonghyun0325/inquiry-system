@@ -9,9 +9,11 @@ public class AdminInquiryResponse {
     private Long id;
     private String category;
     private String title;
+    private String content;
     private String customerName;
     private String customerEmail;
     private String status;
+    private String answer;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -19,9 +21,11 @@ public class AdminInquiryResponse {
         this.id = inquiry.getId();
         this.category = inquiry.getCategory();
         this.title = inquiry.getTitle();
+        this.content = inquiry.getContent();
         this.customerName = inquiry.getCustomerName();
         this.customerEmail = inquiry.getCustomerEmail();
         this.status = inquiry.getStatus();
+        this.answer = inquiry.getAnswer();
         this.createdAt = inquiry.getCreatedAt();
         this.updatedAt = inquiry.getUpdatedAt();
     }
@@ -38,6 +42,10 @@ public class AdminInquiryResponse {
         return title;
     }
 
+    public String getContent() {
+        return content;
+    }
+
     public String getCustomerName() {
         return customerName;
     }
@@ -48,6 +56,10 @@ public class AdminInquiryResponse {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getAnswer() {
+        return answer;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -10,6 +10,7 @@ import com.example.inquirysystem.user.StatusUpdateRequest;
 import com.example.inquirysystem.dto.AdminInquiryResponse;
 import com.example.inquirysystem.dto.InquiryStatusUpdateRequest;
 import com.example.inquirysystem.dto.InquiryAnswerUpdateRequest;
+import com.example.inquirysystem.dto.AdminDashboardResponse;
 
 import java.util.List;
 
@@ -77,5 +78,19 @@ public class AdminController {
             @RequestBody InquiryAnswerUpdateRequest request
     ) {
         return inquiryService.updateInquiryAnswer(id, request);
+    }
+
+    // 관리자 문의 상세 조회
+    @GetMapping("/inquiries/{id}")
+    public ApiResponse<AdminInquiryResponse> getInquiryForAdmin(
+            @PathVariable Long id
+    ) {
+        return inquiryService.getInquiryForAdmin(id);
+    }
+
+    // 관리자 대시보드 조회
+    @GetMapping("/dashboard")
+    public ApiResponse<AdminDashboardResponse> getAdminDashboard() {
+        return inquiryService.getAdminDashboard();
     }
 }

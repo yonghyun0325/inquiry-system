@@ -6,12 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
     List<Inquiry> findByTitleContaining(String title);
+
+    long countByStatus(String status);
+
     @Query("""
         SELECT i
         FROM Inquiry i
@@ -36,5 +40,9 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
             @Param("title") String title,
             @Param("category") String category,
             @Param("status") String status
+    );
+    long countByCreatedAtBetween(
+            LocalDateTime start,
+            LocalDateTime end
     );
 }

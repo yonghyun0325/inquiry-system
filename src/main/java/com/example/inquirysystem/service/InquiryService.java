@@ -11,18 +11,23 @@ import org.springframework.data.domain.Pageable;
 import com.example.inquirysystem.dto.AdminInquiryResponse;
 import com.example.inquirysystem.dto.InquiryStatusUpdateRequest;
 import com.example.inquirysystem.dto.InquiryAnswerUpdateRequest;
-
+import com.example.inquirysystem.dto.AdminDashboardResponse;
+import com.example.inquirysystem.user.UserRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Service
 public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
+    private final UserRepository userRepository;
 
-    public InquiryService(InquiryRepository inquiryRepository)
+    public InquiryService(InquiryRepository inquiryRepository,UserRepository userRepository)
     {
         this.inquiryRepository = inquiryRepository;
+        this.userRepository = userRepository;
     }
 
     // 문의 등록
@@ -259,6 +264,81 @@ public class InquiryService {
                 true,
                 "문의 답변 등록 성공",
                 inquiry.getAnswer()
+        );
+    }
+
+    // 관리자 문의 상세 조회
+    public ApiResponse<AdminInquiryResponse> getInquiryForAdmin(Long id) {
+
+        Inquiry inquiry = inquiryRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("문의를 찾을 수 없습니다.")
+                );
+
+        return new ApiResponse<>(
+                true,
+                "관리자 문의 상세 조회 성공",
+                new AdminInquiryResponse(inquiry)
+        );
+    }
+
+    // 관리자 대시보드 조회
+    public ApiResponse<AdminDashboardResponse> getAdminDashboard() {
+
+        long totalUsers = userRepository.count();
+
+        long activeUsers =
+                userRepository.countByStatus("ACTIVE");
+
+        long inactiveUsers =
+                userRepository.countByStatus("INACTIVE");
+
+        long totalInquiries =
+                inquiryRepository.count();
+
+        long requestedCount =
+                inquiryRepository.countByStatus("REQUESTED");
+
+        long completedCount =
+                inquiryRepository.countByStatus("COMPLETED");
+
+        LocalDateTime todayStart =
+                LocalDate.now().atStartOfDay();
+
+        LocalDateTime todayEnd =
+                todayStart.plusDays(1);
+
+        long todayInquiries =
+                inquiryRepository.countByCreatedAtBetween(
+                        todayStart,
+                        todayEnd
+                );
+
+        double completionRate = 0.0;
+
+        if (totalInquiries > 0) {
+            completionRate =
+                    (double) completedCount
+                            / totalInquiries
+                            * 100;
+        }
+
+        AdminDashboardResponse response =
+                new AdminDashboardResponse(
+                        totalUsers,
+                        activeUsers,
+                        inactiveUsers,
+                        totalInquiries,
+                        requestedCount,
+                        completedCount,
+                        todayInquiries,
+                        completionRate
+                );
+
+        return new ApiResponse<>(
+                true,
+                "관리자 대시보드 조회 성공",
+                response
         );
     }
 }
