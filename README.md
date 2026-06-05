@@ -1,9 +1,74 @@
-# 🚀 Inquiry System
+# 🚀 AI Inquiry & Schedule Management Platform
 
-> Spring Boot + JPA 기반 문의 관리 및 사용자 인증 시스템 백엔드 프로젝트
+사용자의 문의를 효율적으로 관리하고, 관리자 기능을 통해 문의 처리 현황을 모니터링하며, 향후 AI 기반 자동 답변 기능과 일정 관리 기능까지 확장 가능한 백엔드 플랫폼입니다.
 
-단순 CRUD 구현이 아닌,
-실무형 REST API 구조와 사용자 인증(Authentication) 및 권한 인가(Authorization) 흐름을 포함한 백엔드 아키텍처 학습을 목표로 개발 중입니다.
+본 프로젝트는 단순 CRUD 구현을 넘어 실제 서비스 환경에서 사용되는 인증(Authentication), 권한 인가(Authorization), 관리자(Admin) 기능, 통계 대시보드 구조를 직접 설계하고 구현하는 것을 목표로 개발했습니다.
+
+---
+
+# 🎯 Project Goal
+
+본 프로젝트를 통해 다음과 같은 실무 역량을 학습하고 적용했습니다.
+
+* Spring Boot 기반 REST API 설계
+* Spring Security 기반 인증/인가 구현
+* JWT 기반 로그인 및 권한 관리
+* JPA 기반 데이터 관리
+* 관리자(Admin) 기능 구현
+* 통계 대시보드 구현
+* AI 자동 응답 기능 확장 고려
+* 일정 관리 기능 확장 고려
+
+---
+
+# 🏗 System Architecture
+
+```plaintext
+[ User ]
+
+회원가입
+ ↓
+로그인
+ ↓
+JWT 발급
+ ↓
+문의 등록 / 조회
+ ↓
+DB 저장
+
+--------------------------------
+
+[ Admin ]
+
+JWT 인증
+ ↓
+회원 관리
+ ↓
+문의 관리
+ ↓
+답변 등록
+ ↓
+대시보드 조회
+
+--------------------------------
+
+[ Future AI ]
+
+문의 분석
+ ↓
+자동 분류
+ ↓
+자동 답변 생성
+
+--------------------------------
+
+[ Future Schedule ]
+
+일정 등록
+일정 수정
+일정 조회
+일정 삭제
+```
 
 ---
 
@@ -16,22 +81,20 @@
 * Spring Data JPA
 * Spring Security
 * Hibernate
-* Validation
 * JWT
-* Swagger(OpenAPI)
+* Validation
 
 ## Database
 
 * MySQL
 
+## Documentation
+
+* Swagger(OpenAPI)
+
 ## Build Tool
 
 * Gradle
-
-## API Test
-
-* Postman
-* Swagger UI
 
 ## Version Control
 
@@ -40,310 +103,104 @@
 
 ---
 
-# 📂 Project Structure
+# ✨ Key Features
 
-```plaintext
-common
- ┣ 공통 API 응답 구조
+## 👤 User
 
-controller
- ┣ Inquiry API 요청 처리
- ┣ Admin API 요청 처리
-
-service
- ┣ 비즈니스 로직 처리
-
-repository
- ┣ JPA 기반 DB 접근
-
-entity
- ┣ DB 테이블 매핑
-
-dto
- ┣ Request / Response 데이터 분리
-
-exception
- ┣ Global Exception Handling
-
-security
- ┣ SecurityConfig
- ┣ JwtProvider
- ┣ JwtAuthenticationFilter
-
-user
- ┣ 사용자 Entity / Repository / Service / Controller
- ┣ 회원가입 요청 DTO
- ┣ 로그인 요청 DTO
- ┣ 로그인 응답 DTO
- ┣ 사용자 응답 DTO
- ┣ 내 정보 조회 DTO
-```
-
----
-
-# ✨ Features
-
-## ✅ Inquiry CRUD API
-
-문의 관리 기능을 REST API 기반으로 구현했습니다.
-
+* 회원가입
+* 로그인
+* JWT 인증
+* 내 정보 조회
 * 문의 등록
-* 문의 전체 조회
-* 문의 단건 조회
+* 문의 조회
 * 문의 수정
 * 문의 삭제
 
 ---
 
-## ✅ Search API
+## 🛡 Admin
 
-제목 기반 및 조건 기반 문의 검색 기능을 구현했습니다.
+### User Management
 
-### Search Example
+* 회원 목록 조회
+* 사용자 권한 변경
+* 사용자 상태 변경
 
-```http
-GET /inquiries/search?title=배터리
-```
+### Inquiry Management
 
-### Dynamic Search Example
+* 문의 목록 조회
+* 문의 상세 조회
+* 문의 상태 변경
+* 문의 답변 등록
 
-```http
-GET /inquiries/search?title=배터리&category=BATTERY&status=REQUESTED
-```
+### Dashboard
 
----
-
-## ✅ Pagination API
-
-페이지 기반 조회 기능을 구현했습니다.
-
-### Pagination Example
-
-```http
-GET /inquiries/page?page=0&size=5
-```
-
-### Search + Pagination Example
-
-```http
-GET /inquiries/search/page?category=BATTERY&page=0&size=3
-```
+* 전체 회원 수 조회
+* 활성 회원 수 조회
+* 비활성 회원 수 조회
+* 전체 문의 수 조회
+* 처리 대기 문의 수 조회
+* 처리 완료 문의 수 조회
+* 오늘 접수 문의 수 조회
+* 문의 처리율 조회
 
 ---
 
-## ✅ User Management API
+# 🔐 Authentication & Authorization
 
-사용자 회원가입 및 로그인 기능을 구현했습니다.
+본 프로젝트는 Spring Security와 JWT를 활용하여 인증 및 권한 관리를 구현했습니다.
 
-### Signup
-
-* 이메일 중복 체크
-* BCrypt 비밀번호 암호화
-* 기본 권한 설정
-* 기본 상태 설정
+## Authentication Flow
 
 ```plaintext
-ROLE_USER
-ACTIVE
+로그인
+ ↓
+JWT Access Token 발급
+ ↓
+Authorization Header 전달
+ ↓
+JwtAuthenticationFilter 검증
+ ↓
+SecurityContext 등록
+ ↓
+인증 완료
 ```
 
-### Login
-
-* 이메일 기반 사용자 조회
-* 비밀번호 검증
-* JWT Access Token 발급
-
----
-
-## ✅ JWT Authentication
-
-로그인 성공 시 JWT Access Token을 발급하고, 보호된 API 접근 시 JWT 기반 인증을 수행하도록 구현했습니다.
-
-### Login Response Example
-
-```json
-{
-  "success": true,
-  "message": "로그인 성공",
-  "data": {
-    "accessToken": "eyJhbGciOiJIUzUxMiJ9..."
-  }
-}
-```
-
-### JWT Info
-
-```plaintext
-Subject    : 사용자 이메일
-Algorithm  : HS512
-Expiration : 1시간
-```
-
-### JWT Authentication Features
-
-* JWT Access Token 발급
-* JWT 토큰 검증
-* JwtAuthenticationFilter 구현
-* Authorization Header 인증 처리
-* SecurityContext 인증 등록
-
-### Authentication Example
-
-```http
-GET /inquiries
-Authorization: Bearer {JWT_TOKEN}
-```
-
-JWT 토큰 없이 접근 시
-
-```plaintext
-403 Forbidden
-```
-
-JWT 토큰 포함 시
-
-```plaintext
-200 OK
-```
-
----
-
-## ✅ Role-Based Authorization
-
-JWT 기반 권한(Role) 제어 기능을 구현했습니다.
-
-### Supported Roles
+## Authorization
 
 ```plaintext
 ROLE_USER
 ROLE_ADMIN
 ```
 
-### Authorization Flow
-
-```plaintext
-로그인
-↓
-JWT 발급
-↓
-Role 저장
-↓
-JWT 검증
-↓
-SecurityContext 등록
-↓
-권한 검사
-```
-
-### Admin API Example
-
-```http
-GET /admin/test
-```
-
-### Authorization Result
-
-```plaintext
-ROLE_USER  → 403 Forbidden
-ROLE_ADMIN → 200 OK
-```
+관리자 API는 ROLE_ADMIN 사용자만 접근할 수 있도록 구현했습니다.
 
 ---
 
-## ✅ User Profile API
+# 📊 Dashboard
 
-현재 로그인한 사용자 정보를 조회할 수 있습니다.
+관리자 대시보드 통계 기능을 구현했습니다.
 
-### Example
-
-```http
-GET /users/me
-Authorization: Bearer {JWT_TOKEN}
-```
-
-### Response
+### Dashboard Response Example
 
 ```json
 {
-  "success": true,
-  "message": "내 정보 조회 성공",
-  "data": {
-    "id": 2,
-    "email": "security@test.com",
-    "name": "보안테스트",
-    "role": "ROLE_ADMIN"
-  }
+  "totalUsers": 2,
+  "activeUsers": 1,
+  "inactiveUsers": 0,
+  "totalInquiries": 7,
+  "requestedCount": 6,
+  "completedCount": 1,
+  "todayInquiries": 0,
+  "completionRate": 14.28
 }
-```
-
----
-
-## ✅ Validation
-
-사용자 요청 데이터 검증 기능을 적용했습니다.
-
-```java
-@NotBlank
-@Email
-@Valid
-```
-
----
-
-## ✅ Global Exception Handling
-
-```java
-@RestControllerAdvice
-```
-
-기반 전역 예외 처리를 적용했습니다.
-
----
-
-## ✅ Common API Response
-
-모든 API 응답 구조를 통일했습니다.
-
-### Success Response Example
-
-```json
-{
-  "success": true,
-  "message": "문의 등록 성공",
-  "data": {
-    ...
-  }
-}
-```
-
----
-
-## ✅ JPA Auditing
-
-생성일과 수정일을 자동으로 관리하도록 적용했습니다.
-
-```java
-@CreatedDate
-@LastModifiedDate
-```
-
----
-
-## ✅ Swagger API Documentation
-
-Swagger(OpenAPI)를 적용하여 API 문서 자동화 및 브라우저 기반 테스트 환경을 구성했습니다.
-
-### Swagger URL
-
-```plaintext
-http://localhost:8080/swagger-ui/index.html
 ```
 
 ---
 
 # 📌 Entity Design
 
-## Inquiry Entity
+## Inquiry
 
 ```plaintext
 id
@@ -353,11 +210,12 @@ content
 customerName
 customerEmail
 status
+answer
 createdAt
 updatedAt
 ```
 
-## User Entity
+## User
 
 ```plaintext
 id
@@ -377,190 +235,108 @@ updatedAt
 
 ## Inquiry API
 
-| Method | URL                      | Description |
-| ------ | ------------------------ | ----------- |
-| POST   | `/inquiries`             | 문의 등록       |
-| GET    | `/inquiries`             | 문의 전체 조회    |
-| GET    | `/inquiries/{id}`        | 문의 단건 조회    |
-| PUT    | `/inquiries/{id}`        | 문의 수정       |
-| DELETE | `/inquiries/{id}`        | 문의 삭제       |
-| GET    | `/inquiries/search`      | 문의 검색       |
-| GET    | `/inquiries/page`        | 문의 페이징 조회   |
-| GET    | `/inquiries/search/page` | 검색 + 페이징 조회 |
+| Method | URL                    | Description |
+| ------ | ---------------------- | ----------- |
+| POST   | /inquiries             | 문의 등록       |
+| GET    | /inquiries             | 문의 전체 조회    |
+| GET    | /inquiries/{id}        | 문의 단건 조회    |
+| PUT    | /inquiries/{id}        | 문의 수정       |
+| DELETE | /inquiries/{id}        | 문의 삭제       |
+| GET    | /inquiries/search      | 문의 검색       |
+| GET    | /inquiries/page        | 문의 페이징 조회   |
+| GET    | /inquiries/search/page | 검색 + 페이징 조회 |
 
 ## User API
 
-| Method | URL             | Description   |
-| ------ | --------------- | ------------- |
-| POST   | `/users/signup` | 회원가입          |
-| POST   | `/users/login`  | 로그인 및 JWT 발급  |
-| GET    | `/users/me`     | 현재 로그인 사용자 조회 |
+| Method | URL           | Description |
+| ------ | ------------- | ----------- |
+| POST   | /users/signup | 회원가입        |
+| POST   | /users/login  | 로그인         |
+| GET    | /users/me     | 내 정보 조회     |
 
 ## Admin API
 
-| Method | URL           | Description |
-| ------ | ------------- | ----------- |
-| GET    | `/admin/test` | 관리자 권한 테스트  |
-|        |               |             |
+| Method | URL                          | Description |
+| ------ | ---------------------------- | ----------- |
+| GET    | /admin/dashboard             | 관리자 대시보드    |
+| GET    | /admin/users                 | 회원 목록 조회    |
+| PATCH  | /admin/users/{id}/role       | 사용자 권한 변경   |
+| PATCH  | /admin/users/{id}/status     | 사용자 상태 변경   |
+| GET    | /admin/inquiries             | 문의 목록 조회    |
+| GET    | /admin/inquiries/{id}        | 문의 상세 조회    |
+| PATCH  | /admin/inquiries/{id}/status | 문의 상태 변경    |
+| PATCH  | /admin/inquiries/{id}/answer | 문의 답변 등록    |
+
+---
+
 # 📈 Current Progress
 
-## Core
+## Completed
 
-* [x] Spring Boot 프로젝트 생성
-* [x] MySQL 연동
-* [x] JPA CRUD 구현
-* [x] DTO 분리
-* [x] Validation 적용
-* [x] Global Exception Handling 적용
-* [x] API 응답 구조 통일
-* [x] JPA Auditing 적용
-* [x] Swagger 문서화 적용
-
----
-
-## Inquiry
-
-* [x] 문의 등록
-
-* [x] 문의 전체 조회
-
-* [x] 문의 단건 조회
-
-* [x] 문의 수정
-
-* [x] 문의 삭제
-
-* [x] 제목 검색 기능 구현
-
-* [x] 복합 검색 기능 구현
-
-* [x] Pageable 기반 페이징 구현
-
-* [x] 검색 + 페이징 기능 구현
-
----
-
-## User
-
-* [x] 회원가입 기능 구현
-* [x] 로그인 기능 구현
-* [x] BCrypt 비밀번호 암호화 적용
-
----
-
-## Security
-
-### Authentication
-
-* [x] Spring Security 적용
-* [x] JWT Access Token 발급
-* [x] JWT 토큰 검증
-* [x] JwtAuthenticationFilter 구현
-* [x] Authorization Header 인증 처리
-* [x] SecurityContext 인증 등록
-
-### User Information
-
-* [x] 현재 로그인 사용자 조회 API (/users/me)
-
-### Authorization
-
-* [x] JWT Role Claim 적용
-* [x] ROLE_USER 구현
-* [x] ROLE_ADMIN 구현
-* [x] Spring Security 권한 등록
-* [x] Role 기반 접근 제어
-* [x] Admin API 보호
-* [x] 관리자 권한 검증 완료
-
----
-
-## Documentation
-
-* [x] Swagger API 설명 적용
-* [x] README 문서화
-
----
+* Spring Boot 프로젝트 구축
+* JPA CRUD 구현
+* 검색 및 페이징 구현
+* JWT 인증 구현
+* ROLE 기반 권한 관리
+* 관리자 회원 관리
+* 관리자 문의 관리
+* 관리자 대시보드
+* Swagger 문서화
+* Global Exception Handling
+* Validation 적용
 
 ## In Progress
 
-* [ ] Refresh Token 적용
-* [ ] 관리자 회원 관리 기능
-* [ ] 관리자 문의 관리 기능
-* [ ] AI 문의 응답 기능
-* [ ] AI 문의 자동 분류 기능
+* Refresh Token 적용
+* AI 문의 자동 응답
+* AI 문의 자동 분류
+* 일정 관리(Schedule Management)
 
 ---
 
-# 🔜 Next Step
-
-## Admin Features
-
-* 관리자 회원 목록 조회 API
-* 사용자 권한(Role) 변경 API
-* 사용자 상태(Status) 변경 API
-* 관리자 문의 목록 조회 API
-* 관리자 문의 상태 변경 API
+# 🔮 Future Plans
 
 ## Security
 
-* Refresh Token 구현
-* Access Token 재발급 API 구현
-* 로그아웃 처리
+* Refresh Token
+* Access Token 재발급
+* 로그아웃 기능
 
 ## AI
 
 * OpenAI API 연동
 * AI 문의 자동 답변
-* AI 문의 카테고리 분류
-* AI 답변 저장 기능
+* AI 문의 자동 분류
+* AI 답변 추천
 
----
+## Schedule
 
-# 🎯 Goal
-
-단순 CRUD 프로젝트를 넘어,
-
-* JWT 기반 인증(Authentication)
-* Role 기반 권한 인가(Authorization)
-* 관리자(Admin) 기능
-* AI 문의 자동 응답
-
-을 포함한 실무형 백엔드 시스템 구축을 목표로 합니다.
-
-현재는 Spring Security와 JWT 기반 인증/인가 구조를 구현하였으며,
-
-향후 Refresh Token,
-관리자 기능,
-AI 문의 자동 분류 및 답변 기능을 추가하여
-
-**AI 기반 문의 관리 플랫폼(AI Inquiry Management Platform)** 으로 확장하는 것을 목표로 합니다.
+* 일정 등록
+* 일정 조회
+* 일정 수정
+* 일정 삭제
+* 사용자별 일정 관리
+* 캘린더 조회 기능
 
 ---
 
 # 🚀 Project Status
 
 ```plaintext
-CRUD                  ✅ 완료
-검색                  ✅ 완료
-페이징                ✅ 완료
+CRUD                    ✅ 완료
+검색                    ✅ 완료
+페이징                  ✅ 완료
 
-회원가입              ✅ 완료
-로그인                ✅ 완료
-BCrypt                ✅ 완료
+회원가입                ✅ 완료
+로그인                  ✅ 완료
+JWT 인증                ✅ 완료
+JWT 권한 관리           ✅ 완료
 
-JWT 발급              ✅ 완료
-JWT 검증              ✅ 완료
-JWT Filter            ✅ 완료
+관리자 회원 관리         ✅ 완료
+관리자 문의 관리         ✅ 완료
+관리자 대시보드         ✅ 완료
 
-/users/me            ✅ 완료
-
-ROLE_USER            ✅ 완료
-ROLE_ADMIN           ✅ 완료
-
-관리자 접근 제어       ✅ 완료
-
-Refresh Token        ⏳ 예정
-관리자 기능           ⏳ 진행 예정
-AI 문의 응답          ⏳ 진행 예정
+Refresh Token           ⏳ 진행 예정
+AI 문의 자동 응답        ⏳ 진행 예정
+일정 관리               ⏳ 진행 예정
 ```
