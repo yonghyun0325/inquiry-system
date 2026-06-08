@@ -4,6 +4,9 @@ import com.example.inquirysystem.common.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import com.example.inquirysystem.common.ApiResponse;
+import com.example.inquirysystem.user.RefreshTokenRequest;
+import com.example.inquirysystem.user.TokenRefreshResponse;
 
 @RestController
 @RequestMapping("/users")
@@ -38,5 +41,12 @@ public class UserController {
         String email = authentication.getName();
 
         return userService.getMyInfo(email);
+    }
+
+    @PostMapping("/refresh")
+    public ApiResponse<TokenRefreshResponse> refreshToken(
+            @RequestBody RefreshTokenRequest request
+    ) {
+        return userService.refreshToken(request);
     }
 }

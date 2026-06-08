@@ -80,4 +80,20 @@ public class JwtProvider {
 
         return claims.get("role", String.class);
     }
+
+    // Refresh Token 생성
+    public String createRefreshToken(String email) {
+
+        Date now = new Date();
+
+        Date expiryDate =
+                new Date(now.getTime() + 1000L * 60 * 60 * 24 * 14);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey())
+                .compact();
+    }
 }
