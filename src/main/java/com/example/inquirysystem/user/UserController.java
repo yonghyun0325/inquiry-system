@@ -49,4 +49,11 @@ public class UserController {
     ) {
         return userService.refreshToken(request);
     }
+
+    @PostMapping("/logout")
+    public ApiResponse<String> logout(
+            @RequestBody LogoutRequest request
+    ) {
+        return userService.logout(request);
+    }
 }

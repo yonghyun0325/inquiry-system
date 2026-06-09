@@ -225,4 +225,29 @@ public class UserService {
                 )
         );
     }
+
+    public ApiResponse<String> logout(
+            LogoutRequest request
+    ) {
+
+        RefreshToken refreshToken = refreshTokenRepository
+                .findByToken(
+                        request.getRefreshToken()
+                )
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Refresh Token이 존재하지 않습니다."
+                        )
+                );
+
+        refreshTokenRepository.delete(
+                refreshToken
+        );
+
+        return new ApiResponse<>(
+                true,
+                "로그아웃 성공",
+                null
+        );
+    }
 }
